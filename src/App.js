@@ -24,19 +24,29 @@ class App extends Component {
   }
 
   addProduct = _ => {
-
+    const {product} = this.state;
+    fetch(`http://localhost:3000/products/add?handlerID=${product.handlerID}&testerID=${product.testerID}`)
+    .then(response => response.json())
+    .then(this.getProducts)
+    .catch(err => console.error(err))
   }
 
-renderProduct = ({ id, handlerID, testerID, description, remarks}) => <div key={id}>{handlerID}{' '}{remarks}</div>
+renderProduct = ({ id, handlerID, testerID, description, remarks}) => <div key={id}>{id}{' '}{handlerID}{' '}{remarks}</div>
 
   render(){
-    const { products } = this.state;
+    const { products, product } = this.state;
     return (
       <div className="App">
         {products.map(this.renderProduct)}
 
         <div>
-          <input/>
+          <input
+            value={product.handlerID}
+            onChange={e => this.setState({ product:{ ...product, handlerID: e.target.value }})} />
+          <input
+            value={product.testerID}
+            onChange={e => this.setState({ product:{ ...product, testerID: e.target.value }})} />
+          <button onClick={this.addProduct}>ADD PRODUCT</button>
         </div>
       </div>
     );
